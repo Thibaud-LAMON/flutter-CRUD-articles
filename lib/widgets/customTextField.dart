@@ -6,7 +6,7 @@ class CustomTextField {
   final bool ispass;
   String err;
   String _value=""; //accessible uniquement dans la classe
-  CustomTextField({this.title="", this.placeholder="", this.ispass=false, this.err=""});
+  CustomTextField({this.title="", this.placeholder="", this.ispass=false, this.err="veuillez spécifier ce champs"});
   TextFormField textformfield(){
     return TextFormField(
       onChanged: (e){
@@ -28,5 +28,9 @@ class CustomTextField {
         )
       ),
     );
+  }
+
+  String get value{
+    return _value;
   }
 }
