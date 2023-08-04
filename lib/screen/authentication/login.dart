@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:article/widgets/customTextField.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class Login extends StatefulWidget {
   //const Login({super.key});
@@ -11,6 +13,13 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  Future<void> login(String email, String pass) async{
+    final response = await http.get(Uri.parse("https://pubescent-securitie.000webhostapp.com/article/connection.php"));
+    if(response.statusCode == 200){
+      var data = jsonDecode(response.body);
+      print(data);
+    }
+  }
   CustomTextField emailText = new CustomTextField(
     title: "Email",
     placeholder: "Enter email"
@@ -42,10 +51,11 @@ class _LoginState extends State<Login> {
                   passText.textformfield(),
                   SizedBox(height: 10,),
                   ElevatedButton(onPressed: (){
-                    if(_key.currentState!.validate()){
+                    login("", "");
+                    /*if(_key.currentState!.validate()){
                       print(emailText.value);
                       print("ok");
-                    }
+                    }*/
                   },
                     child: Text("Login", style: TextStyle(color: Colors.white, fontSize: 20),),
                     style: ElevatedButton.styleFrom(
