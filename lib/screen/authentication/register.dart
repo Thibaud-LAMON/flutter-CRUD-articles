@@ -3,6 +3,8 @@ import 'package:article/widgets/customTextField.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../../widgets/loading.dart';
+
 class Register extends StatefulWidget {
   //const Register({super.key});
   final VoidCallback? visible;
@@ -13,6 +15,8 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
+  String err = "";
+  bool _loading = false;
   CustomTextField emailText = new CustomTextField(
       title: "Email",
       placeholder: "Enter email"
@@ -22,6 +26,9 @@ class _RegisterState extends State<Register> {
       placeholder: "Enter name"
   );
   void register(String name, String email, String pass)async{
+    setState(() {
+      _loading = true;
+    });
     final response = await http.post(Uri.parse("https://pubescent-securitie.000webhostapp.com/article/register.php"), body: {
       "name":name,
       "email":email,
@@ -29,7 +36,19 @@ class _RegisterState extends State<Register> {
     });
     if(response.statusCode == 200){
       var data = jsonDecode(response.body);
-      print(data);
+      var result = data["data"];
+      int success = result[1];
+      if(success == 1){
+        setState(() {
+          err = result[0];
+          _loading = false;
+        });
+      }else{
+        setState(() {
+          err = result[0];
+          _loading = false;
+        });
+      }
     }
   }
   CustomTextField passText = new CustomTextField(
@@ -48,7 +67,7 @@ class _RegisterState extends State<Register> {
     emailText.err = "enter email";
     nameText.err = "enter name";
     passText.err = "enter password";
-    return Scaffold(
+    return _loading?Loading():Scaffold(
       body: Center(
         child: SingleChildScrollView(
           child: Container(
@@ -92,7 +111,9 @@ class _RegisterState extends State<Register> {
                             child: (Text("Login", style: TextStyle(color: Colors.redAccent),))
                         )
                       ],
-                    )
+                    ),
+                    SizedBox(height: 30,),
+                    Text(err, style: TextStyle(color: Colors.red), textAlign: TextAlign.center,)
                   ],
                 ),
               )

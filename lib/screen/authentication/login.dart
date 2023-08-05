@@ -3,6 +3,8 @@ import 'package:article/widgets/customTextField.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../../widgets/loading.dart';
+
 class Login extends StatefulWidget {
   //const Login({super.key});
   //final Function visible;
@@ -13,11 +15,33 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  String err = "";
+  bool _loading = false;
   Future<void> login(String email, String pass) async{
-    final response = await http.get(Uri.parse("https://pubescent-securitie.000webhostapp.com/article/connection.php"));
+    setState(() {
+      err = "";
+      _loading = true;
+    });
+    final response = await http.post(Uri.parse("https://pubescent-securitie.000webhostapp.com/article/login.php"), body:{
+      "email": email,
+      "pass": pass
+    });
     if(response.statusCode == 200){
+      print(response.body);
       var data = jsonDecode(response.body);
-      print(data);
+      var result = data["data"];
+      int success = result[1];
+      if(success == 1){
+        setState(() {
+          err = result[0];
+          _loading = false;
+        });
+      }else{
+        setState(() {
+          err = result[0];
+          _loading = false;
+        });
+      }
     }
   }
   CustomTextField emailText = new CustomTextField(
@@ -34,7 +58,7 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     emailText.err = "enter email";
     passText.err = "enter password";
-    return Scaffold(
+    return _loading?Loading():Scaffold(
       body: Center(
         child: SingleChildScrollView(
           child: Container(
@@ -50,12 +74,10 @@ class _LoginState extends State<Login> {
                   SizedBox(height: 10,),
                   passText.textformfield(),
                   SizedBox(height: 10,),
-                  ElevatedButton(onPressed: (){
-                    login("", "");
-                    /*if(_key.currentState!.validate()){
-                      print(emailText.value);
-                      print("ok");
-                    }*/
+                  ElevatedButton(onPressed: () async{
+                    if(_key.currentState!.validate()){
+                      login(emailText.value, passText.value);
+                    }
                   },
                     child: Text("Login", style: TextStyle(color: Colors.white, fontSize: 20),),
                     style: ElevatedButton.styleFrom(
@@ -74,7 +96,9 @@ class _LoginState extends State<Login> {
                           child: (Text("Register", style: TextStyle(color: Colors.redAccent),))
                       )
                     ],
-                  )
+                  ),
+                  SizedBox(height: 30,),
+                  Text(err, style: TextStyle(color: Colors.red), textAlign: TextAlign.center,)
                 ],
               ),
             )

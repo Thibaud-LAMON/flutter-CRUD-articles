@@ -7,8 +7,11 @@ class CustomTextField {
   String err;
   String _value=""; //accessible uniquement dans la classe
   CustomTextField({this.title="", this.placeholder="", this.ispass=false, this.err="veuillez spécifier ce champs"});
+  TextEditingController controller = TextEditingController();
+
   TextFormField textformfield(){
     return TextFormField(
+      controller: controller,
       onChanged: (e){
         _value= e;
       },
