@@ -36,6 +36,6 @@ class _HomePageState extends State<HomePage> {
   }
   @override
   Widget build(BuildContext context) {
-    return login?Home():visible?Login(toggle, islogin):Register(toggle);
+    return login?Home(login: islogin,):visible?Login(toggle, islogin):Register(toggle);
   }
 }

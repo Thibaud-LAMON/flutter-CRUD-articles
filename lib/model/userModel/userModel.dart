@@ -29,9 +29,18 @@ class UserModel {
   static Future<void> getUser() async{
     SharedPreferences pref = await SharedPreferences.getInstance();
     var data = pref.getString("user");
-    var decode = json.decode(data!);
-    var user = await UserModel.fromJson(decode);
-    sessionUser = user;
-    print(sessionUser?.email);
+    if(data != null){
+      var decode = json.decode(data);
+      var user = await UserModel.fromJson(decode);
+      sessionUser = user;
+    }else{
+      sessionUser = null;
+    }
+  }
+
+  static void logOut() async{
+    SharedPreferences p = await SharedPreferences.getInstance();
+    p.remove("user");
+    sessionUser = null;
   }
 }
