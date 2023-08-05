@@ -2,14 +2,14 @@ import 'dart:convert';
 import 'package:article/widgets/customTextField.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:article/model/userModel/userModel.dart';
 import '../../widgets/loading.dart';
 
 class Login extends StatefulWidget {
   //const Login({super.key});
   //final Function visible;
-  final VoidCallback? visible; //
-  Login(this.visible);
+  final VoidCallback? visible, login;
+  Login(this.visible, this.login);
   @override
   State<Login> createState() => _LoginState();
 }
@@ -34,7 +34,9 @@ class _LoginState extends State<Login> {
       if(success == 1){
         setState(() {
           err = result[0];
+          UserModel.saveUser(UserModel.fromJson(result[2]));
           _loading = false;
+          widget.login?.call();
         });
       }else{
         setState(() {
