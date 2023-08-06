@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:article/crypt/encrypt.dart';
 import 'package:article/widgets/customTextField.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -23,13 +24,13 @@ class _LoginState extends State<Login> {
       _loading = true;
     });
     final response = await http.post(Uri.parse("https://pubescent-securitie.000webhostapp.com/article/login.php"), body:{
-      "email": email,
-      "pass": pass
+      "email": encrypt(email),
+      "pass": encrypt(pass)
     });
     if(response.statusCode == 200){
-      print(response.body);
-      var data = jsonDecode(response.body);
+      var data = jsonDecode(decrypt(response.body));
       var result = data["data"];
+      print(result);
       int success = result[1];
       if(success == 1){
         setState(() {

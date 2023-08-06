@@ -1,8 +1,9 @@
 <?php
 $db = include 'connection.php';
+include "crypto.php";
 
-$email = $_POST['email'];
-$pass = sha1($_POST['pass']);
+$email = decrypt($_POST['email']);
+$pass = sha1(decrypt($_POST['pass']));
 
 try{
     if(isset($email, $pass)){
@@ -27,7 +28,7 @@ try{
 }
 echo json_encode([
     "data"=>[
-        $msg,
+        encrypt($msg),
         $success,
         $array
     ]
